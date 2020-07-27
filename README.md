@@ -1,4 +1,4 @@
-# CRA Recipe
+# Fintech React app setup
 
 This is a step-by-step guide to customize CRA for Fintech projects.
 
@@ -23,7 +23,6 @@ You will get an application which has;
 - [Step 10: Adding React Router](#step-12-adding-react-router)
 - [Step 11: Enabling code-splitting](#step-13-enabling-code-splitting)
 - [Step 12 Final Touches](#step-17-final-touches)
-- [Step 13: Starting to Development <g-emoji class="g-emoji" alias="tada" fallback-src="https://github.githubassets.com/images/icons/emoji/unicode/1f389.png">🎉</g-emoji>](#step-18-starting-to-development-)
 
 ## Step 1: Creating a new app
 
@@ -97,7 +96,7 @@ npm install eslint  eslint-plugin-react --dev
     "browser": true,
     "es6": true
   },
-  "extends": ["plugin:react/recommended", "standard", "eslint:recommended"],
+  "extends": ["plugin:react/recommended", "eslint:recommended"],
   "globals": {
     "Atomics": "readonly",
     "SharedArrayBuffer": "readonly"
@@ -128,7 +127,7 @@ react-app-env.d.js
 
 ```json
 {
-  "eslint.validate": ["javascript", "javascriptreact", "typescript", "typescriptreact"]
+  "eslint.validate": ["javascript", "javascriptreact"]
 }
 ```
 
@@ -259,67 +258,20 @@ it('runs correctly', () => {
 });
 ```
 
-Also, verify coverage report with `yarn coverage`.
+Also, verify coverage report with `npm run coverage`.
 
 ## Step 9: Enabling hot reloading
 
-We want to take advantage of hot reloading and don't want to lose React's current state. In order to do that we can use react hot loader. Since, we use CRA and don't want to eject it, we need to use `customize-cra` package.
-
-```sh
-yarn add react-app-rewired customize-cra @hot-loader/react-dom --dev
-```
-
-After the installation we need to update `package.json` scripts to use `react-app-rewired`
-
-```json
-"start": "react-app-rewired start",
-"build": "react-app-rewired build",
-"test": "react-app-rewired test",
-"eject": "react-app-rewired eject"
-```
-
-Now, we can install `react-hot-loader`.
-
-```sh
-yarn add react-hot-loader
-```
+We want to take advantage of hot reloading and don't want to lose React's current state. In order to do that we can use react hot loader.
 
 Also we need to update hot reloader config.
 
 `src/index.js`
 
 ```js
-import { setConfig } from 'react-hot-loader';
-
-setConfig({
-  ignoreSFC: true,
-  pureRender: true,
-});
-```
-
-In order to update babel config for hot loader, we need to create a `config-overrides.js` file on the root.
-
-```js
-// eslint-disable-next-line @typescript-eslint/no-var-requires
-const { override, addBabelPlugin, addWebpackAlias } = require('customize-cra');
-
-module.exports = override(
-  addBabelPlugin('react-hot-loader/babel'),
-  addWebpackAlias({
-    'react-dom': '@hot-loader/react-dom',
-  }),
-);
-```
-
-Lastly, we need to use hot HOC.
-
-`src/App.js`
-
-```js
-import React from 'react';
-import { hot } from 'react-hot-loader/root';
-
-export default hot(App);
+if (process.env.NODE_ENV !== 'production' && module.hot) {
+  module.hot.accept();
+}
 ```
 
 ## Step 10: Organizing Folder Structure
@@ -394,15 +346,9 @@ Then, we need to encapsulate our root component with `BrowserRouter`.
 
 import React, { FunctionComponent } from 'react';
 import ReactDOM from 'react-dom';
-import { setConfig } from 'react-hot-loader';
 import { BrowserRouter } from 'react-router-dom';
 
 import App from './App';
-
-setConfig({
-  ignoreSFC: true,
-  pureRender: true,
-});
 
 const Root: FunctionComponent = () => (
   <BrowserRouter>
@@ -432,11 +378,10 @@ const Routes: FunctionComponent = () => (
 export default Routes;
 ```
 
-```tsx
+```js
 // src/App.js
 
 import React, { FunctionComponent, Fragment } from 'react';
-import { hot } from 'react-hot-loader';
 
 import Routes from './routes';
 
@@ -447,8 +392,6 @@ const App: FunctionComponent = () => (
     <footer>Footer</footer>
   </Fragment>
 );
-
-export default hot(module)(App);
 ```
 
 ## Step 13: Enabling code-splitting
