@@ -1,6 +1,6 @@
-# Fintech React app setup
+# React app setup
 
-This is a step-by-step guide to customize CRA for Fintech projects.
+This is a step-by-step guide to customize CRA for react projects.
 
 You will get an application which has;
 
